@@ -13,6 +13,7 @@ type OscillatorProps = PropsWithChildren<AudioNodeProps> & {
   frequency?: number
   detune?: number
   type?: OscillatorType
+  periodicWave?: PeriodicWave
 }
 
 export const Oscillator = forwardRef(
@@ -22,7 +23,7 @@ export const Oscillator = forwardRef(
       (audioContext, options) => new OscillatorNode(audioContext, options),
       props,
     )
-    const { frequency, detune, type } = props
+    const { frequency, detune, type, periodicWave } = props
     const { defaultFrequency, defaultDetune, defaultType } = useMemo(
       () => ({
         defaultFrequency: node.frequency.value,
@@ -41,8 +42,12 @@ export const Oscillator = forwardRef(
     }, [node, detune, defaultDetune])
 
     useEffect(() => {
-      node.type = type ?? defaultType
-    }, [node, type])
+      if (periodicWave) {
+        node.setPeriodicWave(periodicWave)
+      } else {
+        node.type = type ?? defaultType
+      }
+    }, [node, type, defaultType, periodicWave])
 
     return <AudioNodeProvider value={node}>{props.children}</AudioNodeProvider>
   },
