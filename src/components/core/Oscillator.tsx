@@ -2,11 +2,9 @@ import {
   ForwardedRef,
   PropsWithChildren,
   forwardRef,
-  useContext,
   useEffect,
   useMemo,
 } from 'react'
-import { AudioContextContext } from './AudioContextProvider'
 import { AudioNodeProvider } from './AudioNodeProvider'
 import { useAudioScheduledSourceNode } from './hooks'
 import { AudioNodeProps } from './types'
@@ -19,11 +17,9 @@ type OscillatorProps = PropsWithChildren<AudioNodeProps> & {
 
 export const Oscillator = forwardRef(
   (props: OscillatorProps, ref: ForwardedRef<OscillatorNode>) => {
-    const audioContext = useContext(AudioContextContext)
     const node = useAudioScheduledSourceNode(
       ref,
       (audioContext, options) => new OscillatorNode(audioContext, options),
-      audioContext,
       props,
     )
     const { frequency, detune, type } = props

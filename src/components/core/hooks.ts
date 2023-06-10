@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
 } from 'react'
+import { AudioContextContext } from './AudioContextProvider'
 import { AudioNodeContext } from './AudioNodeProvider'
 import { setRef } from './helpers'
 import { AudioNodeProps } from './types'
@@ -12,10 +13,10 @@ import { AudioNodeProps } from './types'
 export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
   ref: ForwardedRef<T>,
   getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
-  audioContext: BaseAudioContext,
   options?: O,
   deps?: DependencyList,
 ) => {
+  const audioContext = useContext(AudioContextContext)
   const parent = useContext(AudioNodeContext)
   const node = useMemo(
     () => getOrCreateAudioNode(audioContext, options),
@@ -75,17 +76,10 @@ export const useAudioScheduledSourceNode = <
 >(
   ref: ForwardedRef<T>,
   getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
-  audioContext: BaseAudioContext,
   options?: O,
   deps?: DependencyList,
 ) => {
-  const node = useAudioNode(
-    ref,
-    getOrCreateAudioNode,
-    audioContext,
-    options,
-    deps,
-  )
+  const node = useAudioNode(ref, getOrCreateAudioNode, options, deps)
 
   useEffect(() => {
     node.start()

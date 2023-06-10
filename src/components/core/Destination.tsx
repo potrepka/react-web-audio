@@ -1,5 +1,4 @@
-import { ForwardedRef, PropsWithChildren, forwardRef, useContext } from 'react'
-import { AudioContextContext } from './AudioContextProvider'
+import { ForwardedRef, PropsWithChildren, forwardRef } from 'react'
 import { AudioNodeProvider } from './AudioNodeProvider'
 import { useAudioNode } from './hooks'
 
@@ -7,12 +6,7 @@ type DestinationProps = PropsWithChildren
 
 export const Destination = forwardRef(
   (props: DestinationProps, ref: ForwardedRef<AudioDestinationNode>) => {
-    const audioContext = useContext(AudioContextContext)
-    const value = useAudioNode(
-      ref,
-      (audioContext) => audioContext.destination,
-      audioContext,
-    )
+    const value = useAudioNode(ref, (audioContext) => audioContext.destination)
 
     return <AudioNodeProvider value={value}>{props.children}</AudioNodeProvider>
   },
