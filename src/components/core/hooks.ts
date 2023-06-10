@@ -10,15 +10,25 @@ import { setRef } from './helpers'
 import { AudioNodeProps } from './types'
 
 export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
-  getAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
-  deps: DependencyList,
-  audioContext: BaseAudioContext,
   ref: ForwardedRef<T>,
+  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
+  audioContext: BaseAudioContext,
   options?: O,
+  deps?: DependencyList,
 ) => {
-  const node = useMemo(() => getAudioNode(audioContext, options), deps)
-  const { channelCount, channelCountMode, channelInterpretation } =
-    options ?? {}
+  const parent = useContext(AudioNodeContext)
+  const node = useMemo(
+    () => getOrCreateAudioNode(audioContext, options),
+    deps ?? [audioContext],
+  )
+  const {
+    channelCount,
+    channelCountMode,
+    channelInterpretation,
+    getDestinationParam,
+    outputIndex,
+    inputIndex,
+  } = options ?? {}
   const {
     channelCount: defaultChannelCount,
     channelCountMode: defaultChannelCountMode,
@@ -42,38 +52,16 @@ export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
       channelInterpretation ?? defaultChannelInterpretation
   }, [node, channelInterpretation, defaultChannelInterpretation])
 
-  return node
-}
-
-export const useAudioSourceNode = <
-  T extends AudioNode,
-  O extends AudioNodeProps,
->(
-  C: new (audioContext: BaseAudioContext, options: O) => T,
-  deps: DependencyList,
-  audioContext: BaseAudioContext,
-  ref: ForwardedRef<T>,
-  options: O,
-) => {
-  const parent = useContext(AudioNodeContext)
-  const node = useAudioNode(
-    () => new C(audioContext, options),
-    deps,
-    audioContext,
-    ref,
-    options,
-  )
-  const { getDestinationParam, outputIndex, inputIndex } = options
-
   useEffect(() => {
-    if (parent) {
+    if (parent && node.numberOfOutputs) {
       const destinationParam = getDestinationParam?.(parent)
       if (destinationParam) {
         node.connect(destinationParam, outputIndex)
+        return () => node.disconnect(destinationParam)
       } else {
         node.connect(parent, outputIndex, inputIndex)
+        return () => node.disconnect(parent)
       }
-      return () => node.disconnect(parent)
     }
     return () => {}
   }, [parent, node, getDestinationParam, outputIndex, inputIndex])
@@ -85,13 +73,19 @@ export const useAudioScheduledSourceNode = <
   T extends AudioScheduledSourceNode,
   O extends AudioNodeProps,
 >(
-  C: new (audioContext: BaseAudioContext, options: O) => T,
-  deps: DependencyList,
-  audioContext: BaseAudioContext,
   ref: ForwardedRef<T>,
-  options: O,
+  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
+  audioContext: BaseAudioContext,
+  options?: O,
+  deps?: DependencyList,
 ) => {
-  const node = useAudioSourceNode(C, deps, audioContext, ref, options)
+  const node = useAudioNode(
+    ref,
+    getOrCreateAudioNode,
+    audioContext,
+    options,
+    deps,
+  )
 
   useEffect(() => {
     node.start()

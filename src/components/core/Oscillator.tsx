@@ -21,10 +21,9 @@ export const Oscillator = forwardRef(
   (props: OscillatorProps, ref: ForwardedRef<OscillatorNode>) => {
     const audioContext = useContext(AudioContextContext)
     const node = useAudioScheduledSourceNode(
-      OscillatorNode,
-      [audioContext],
-      audioContext,
       ref,
+      (audioContext, options) => new OscillatorNode(audioContext, options),
+      audioContext,
       props,
     )
     const { frequency, detune, type } = props

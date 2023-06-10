@@ -9,10 +9,9 @@ export const Destination = forwardRef(
   (props: DestinationProps, ref: ForwardedRef<AudioDestinationNode>) => {
     const audioContext = useContext(AudioContextContext)
     const value = useAudioNode(
-      (audioContext: BaseAudioContext) => audioContext.destination,
-      [audioContext],
-      audioContext,
       ref,
+      (audioContext) => audioContext.destination,
+      audioContext,
     )
 
     return <AudioNodeProvider value={value}>{props.children}</AudioNodeProvider>
