@@ -54,7 +54,7 @@ export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
   }, [node, channelInterpretation, defaultChannelInterpretation])
 
   useEffect(() => {
-    if (parent && node.numberOfOutputs) {
+    if (parent && parent.numberOfInputs && node.numberOfOutputs) {
       const destinationParam = getDestinationParam?.(parent)
       if (destinationParam) {
         node.connect(destinationParam, outputIndex)
