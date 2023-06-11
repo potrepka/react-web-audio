@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
+import { useEffect, useState } from 'react'
 import { Destination } from '../components/core/Destination'
 import { Gain } from '../components/core/Gain'
 import { Oscillator } from '../components/core/Oscillator'
@@ -37,6 +38,17 @@ const meta: Meta<typeof Oscillator> = {
 export default meta
 type Story = StoryObj<typeof Oscillator>
 
+const renderOscillatorInfo = (oscillator: OscillatorNode | null) => (
+  <>
+    <p>Channel Count: {oscillator?.channelCount}</p>
+    <p>Channel Count Mode: {oscillator?.channelCountMode}</p>
+    <p>Channel Interpration: {oscillator?.channelInterpretation}</p>
+    <p>Type: {oscillator?.type}</p>
+    <p>Frequency: {oscillator?.frequency?.value} Hz</p>
+    <p>Detune: {oscillator?.detune?.value} cents</p>
+  </>
+)
+
 export const Basic: Story = {
   args: {
     type: 'sine',
@@ -44,12 +56,25 @@ export const Basic: Story = {
     detune: 0,
   },
   render: ({ type, frequency, detune }) => {
+    const [oscillator, setOscillator] = useState<OscillatorNode | null>(null)
+    const [info, setInfo] = useState<JSX.Element | null>(null)
+
+    useEffect(() => {
+      setInfo(renderOscillatorInfo(oscillator))
+    }, [oscillator, type, frequency, detune])
+
     return (
       <>
         <PlayButton />
         <Destination>
-          <Oscillator type={type} frequency={frequency} detune={detune} />
+          <Oscillator
+            ref={setOscillator}
+            type={type}
+            frequency={frequency}
+            detune={detune}
+          />
         </Destination>
+        {info}
       </>
     )
   },
