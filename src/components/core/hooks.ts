@@ -22,7 +22,6 @@ export const useAudioNode = <T extends AudioNode, U extends AudioNodeProps>(
     () => getOrCreateAudioNode(audioContext, options),
     deps ?? [audioContext],
   )
-  console.log('creating from parent:', parent, 'node:', node)
   const {
     channelCount,
     channelCountMode,
