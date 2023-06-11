@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Destination } from '../components/core/Destination'
-import { Oscillator } from '../components/core/Oscillator'
+import { GAIN, Gain } from '../components/core/Gain'
+import { OSCILLATOR, Oscillator } from '../components/core/Oscillator'
 import { PlayButton } from './PlayButton'
 
 const meta: Meta<typeof Oscillator> = {
@@ -14,25 +15,30 @@ type Story = StoryObj<typeof Oscillator>
 
 const renderOscillator = (oscillator: OscillatorNode | null) => (
   <>
+    <p>Channel Count: {oscillator?.channelCount}</p>
+    <p>Channel Count Mode: {oscillator?.channelCountMode}</p>
+    <p>Channel Interpretation: {oscillator?.channelInterpretation}</p>
     <p>Frequency: {oscillator?.frequency?.value}</p>
     <p>Detune: {oscillator?.detune?.value}</p>
     <p>Type: {oscillator?.type}</p>
   </>
 )
 
-export const First: Story = {
+export const Basic: Story = {
   render: () => {
     const ref = useRef<OscillatorNode>(null)
-    const [info, setInfo] = useState<ReactNode>(null)
+    const [oscillator, setOscillator] = useState<OscillatorNode | null>(null)
 
     useEffect(() => {
-      setInfo(renderOscillator(ref.current))
+      setOscillator(ref.current)
     }, [ref.current])
+
+    const info = useMemo(() => renderOscillator(oscillator), [oscillator])
 
     return (
       <>
         <Destination>
-          <Oscillator frequency={100} ref={ref} />
+          <Oscillator ref={ref} frequency={200} type="triangle" />
         </Destination>
         <PlayButton />
         {info}
@@ -41,65 +47,33 @@ export const First: Story = {
   },
 }
 
-export const Second: Story = {
-  render: () => {
-    const ref = useRef<OscillatorNode>(null)
-    const [info, setInfo] = useState<ReactNode>(null)
-
-    useEffect(() => {
-      setInfo(renderOscillator(ref.current))
-    }, [ref.current])
-
-    return (
-      <>
-        <Destination>
-          <Oscillator frequency={200} ref={ref} />
-        </Destination>
-        <PlayButton />
-        {info}
-      </>
-    )
-  },
+export const AM: Story = {
+  render: () => (
+    <>
+      <Destination>
+        <Gain gain={0.5}>
+          <Gain>
+            <Oscillator frequency={200} />
+            <Oscillator frequency={100} connectTo={GAIN.GAIN} />
+          </Gain>
+        </Gain>
+      </Destination>
+      <PlayButton />
+    </>
+  ),
 }
 
-export const Third: Story = {
-  render: () => {
-    const ref = useRef<OscillatorNode>(null)
-    const [info, setInfo] = useState<ReactNode>(null)
-
-    useEffect(() => {
-      setInfo(renderOscillator(ref.current))
-    }, [ref.current])
-
-    return (
-      <>
-        <Destination>
-          <Oscillator frequency={300} ref={ref} />
-        </Destination>
-        <PlayButton />
-        {info}
-      </>
-    )
-  },
-}
-
-export const Triangle: Story = {
-  render: () => {
-    const ref = useRef<OscillatorNode>(null)
-    const [info, setInfo] = useState<ReactNode>(null)
-
-    useEffect(() => {
-      setInfo(renderOscillator(ref.current))
-    }, [ref.current])
-
-    return (
-      <>
-        <Destination>
-          <Oscillator frequency={100} type="triangle" ref={ref} />
-        </Destination>
-        <PlayButton />
-        {info}
-      </>
-    )
-  },
+export const FM: Story = {
+  render: () => (
+    <>
+      <Destination>
+        <Oscillator frequency={200}>
+          <Gain gain={200} connectTo={OSCILLATOR.FREQUENCY}>
+            <Oscillator frequency={100} />
+          </Gain>
+        </Oscillator>
+      </Destination>
+      <PlayButton />
+    </>
+  ),
 }
