@@ -1,5 +1,5 @@
 export type AudioNodeProps = AudioNodeOptions & {
-  getDestinationParam?: (node: AudioNode) => AudioParam
+  connectTo?: (node: AudioNode) => AudioParam
   outputIndex?: number
   inputIndex?: number
 }

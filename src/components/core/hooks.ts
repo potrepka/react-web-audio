@@ -22,11 +22,12 @@ export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
     () => getOrCreateAudioNode(audioContext, options),
     deps ?? [audioContext],
   )
+  console.log('creating from parent:', parent, 'node:', node)
   const {
     channelCount,
     channelCountMode,
     channelInterpretation,
-    getDestinationParam,
+    connectTo,
     outputIndex,
     inputIndex,
   } = options ?? {}
@@ -54,18 +55,18 @@ export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
   }, [node, channelInterpretation, defaultChannelInterpretation])
 
   useEffect(() => {
-    if (parent && parent.numberOfInputs && node.numberOfOutputs) {
-      const destinationParam = getDestinationParam?.(parent)
-      if (destinationParam) {
-        node.connect(destinationParam, outputIndex)
-        return () => node.disconnect(destinationParam)
-      } else {
+    if (parent && node.numberOfOutputs) {
+      const param = connectTo?.(parent)
+      if (param) {
+        node.connect(param, outputIndex)
+        return () => node.disconnect(param)
+      } else if (parent.numberOfInputs) {
         node.connect(parent, outputIndex, inputIndex)
         return () => node.disconnect(parent)
       }
     }
     return () => {}
-  }, [parent, node, getDestinationParam, outputIndex, inputIndex])
+  }, [parent, node, connectTo, outputIndex, inputIndex])
 
   return node
 }

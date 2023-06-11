@@ -9,6 +9,10 @@ import { AudioNodeProvider } from './AudioNodeProvider'
 import { useAudioNode } from './hooks'
 import { AudioNodeProps } from './types'
 
+export const GAIN = {
+  GAIN: (node: AudioNode) => (node as GainNode).gain,
+}
+
 type GainProps = PropsWithChildren<AudioNodeProps> & {
   gain?: number
 }

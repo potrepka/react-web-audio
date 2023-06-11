@@ -9,6 +9,11 @@ import { AudioNodeProvider } from './AudioNodeProvider'
 import { useAudioScheduledSourceNode } from './hooks'
 import { AudioNodeProps } from './types'
 
+export const OSCILLATOR = {
+  FREQUENCY: (node: AudioNode) => (node as OscillatorNode).frequency,
+  DETUNE: (node: AudioNode) => (node as OscillatorNode).detune,
+}
+
 type OscillatorProps = PropsWithChildren<AudioNodeProps> & {
   frequency?: number
   detune?: number
