@@ -1,18 +1,8 @@
-import {
-  ForwardedRef,
-  PropsWithChildren,
-  forwardRef,
-  useEffect,
-  useMemo,
-} from 'react'
+import { ForwardedRef, PropsWithChildren, useEffect, useMemo } from 'react'
 import { AudioNodeProvider } from './AudioNodeProvider'
+import { forwardRefAndAssignParams } from './helpers'
 import { useAudioScheduledSourceNode } from './hooks'
 import { AudioNodeProps } from './types'
-
-export const OSCILLATOR = {
-  FREQUENCY: (node: AudioNode) => (node as OscillatorNode).frequency,
-  DETUNE: (node: AudioNode) => (node as OscillatorNode).detune,
-}
 
 type OscillatorProps = PropsWithChildren<AudioNodeProps> & {
   frequency?: number
@@ -21,7 +11,7 @@ type OscillatorProps = PropsWithChildren<AudioNodeProps> & {
   periodicWave?: PeriodicWave
 }
 
-export const Oscillator = forwardRef(
+export const Oscillator = forwardRefAndAssignParams(
   (props: OscillatorProps, ref: ForwardedRef<OscillatorNode>) => {
     const node = useAudioScheduledSourceNode(
       ref,
@@ -55,5 +45,9 @@ export const Oscillator = forwardRef(
     }, [node, type, defaultType, periodicWave])
 
     return <AudioNodeProvider value={node}>{props.children}</AudioNodeProvider>
+  },
+  {
+    FREQUENCY: (node) => (node as OscillatorNode).frequency,
+    DETUNE: (node) => (node as OscillatorNode).detune,
   },
 )

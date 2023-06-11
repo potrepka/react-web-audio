@@ -1,23 +1,14 @@
-import {
-  ForwardedRef,
-  PropsWithChildren,
-  forwardRef,
-  useEffect,
-  useMemo,
-} from 'react'
+import { ForwardedRef, PropsWithChildren, useEffect, useMemo } from 'react'
 import { AudioNodeProvider } from './AudioNodeProvider'
+import { forwardRefAndAssignParams } from './helpers'
 import { useAudioNode } from './hooks'
 import { AudioNodeProps } from './types'
-
-export const GAIN = {
-  GAIN: (node: AudioNode) => (node as GainNode).gain,
-}
 
 type GainProps = PropsWithChildren<AudioNodeProps> & {
   gain?: number
 }
 
-export const Gain = forwardRef(
+export const Gain = forwardRefAndAssignParams(
   (props: GainProps, ref: ForwardedRef<GainNode>) => {
     const node = useAudioNode(
       ref,
@@ -37,5 +28,8 @@ export const Gain = forwardRef(
     }, [node, gain, defaultGain])
 
     return <AudioNodeProvider value={node}>{props.children}</AudioNodeProvider>
+  },
+  {
+    GAIN: (node) => (node as GainNode).gain,
   },
 )

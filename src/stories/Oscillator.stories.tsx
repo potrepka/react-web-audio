@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Destination } from '../components/core/Destination'
-import { GAIN, Gain } from '../components/core/Gain'
-import { OSCILLATOR, Oscillator } from '../components/core/Oscillator'
+import { Gain } from '../components/core/Gain'
+import { Oscillator } from '../components/core/Oscillator'
 import { PlayButton } from './PlayButton'
 
 const meta: Meta<typeof Oscillator> = {
@@ -54,7 +54,7 @@ export const AM: Story = {
         <Gain gain={0.5}>
           <Gain>
             <Oscillator frequency={200} />
-            <Oscillator frequency={100} connectTo={GAIN.GAIN} />
+            <Oscillator frequency={100} connectTo={Gain.GAIN} />
           </Gain>
         </Gain>
       </Destination>
@@ -68,7 +68,7 @@ export const FM: Story = {
     <>
       <Destination>
         <Oscillator frequency={200}>
-          <Gain gain={200} connectTo={OSCILLATOR.FREQUENCY}>
+          <Gain gain={200} connectTo={Oscillator.FREQUENCY}>
             <Oscillator frequency={100} />
           </Gain>
         </Oscillator>

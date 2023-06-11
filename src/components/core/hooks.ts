@@ -10,10 +10,10 @@ import { AudioNodeContext } from './AudioNodeProvider'
 import { setRef } from './helpers'
 import { AudioNodeProps } from './types'
 
-export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
+export const useAudioNode = <T extends AudioNode, U extends AudioNodeProps>(
   ref: ForwardedRef<T>,
-  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
-  options?: O,
+  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: U) => T,
+  options?: U,
   deps?: DependencyList,
 ) => {
   const audioContext = useContext(AudioContextContext)
@@ -73,11 +73,11 @@ export const useAudioNode = <T extends AudioNode, O extends AudioNodeProps>(
 
 export const useAudioScheduledSourceNode = <
   T extends AudioScheduledSourceNode,
-  O extends AudioNodeProps,
+  U extends AudioNodeProps,
 >(
   ref: ForwardedRef<T>,
-  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: O) => T,
-  options?: O,
+  getOrCreateAudioNode: (audioContext: BaseAudioContext, options?: U) => T,
+  options?: U,
   deps?: DependencyList,
 ) => {
   const node = useAudioNode(ref, getOrCreateAudioNode, options, deps)
