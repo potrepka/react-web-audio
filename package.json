@@ -4,9 +4,48 @@
   "description": "React components for the Web Audio API",
   "author": "Nathaniel Potrepka",
   "license": "MIT",
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/potrepka/react-web-audio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/potrepka/react-web-audio/issues"
+  },
+  "keywords": [
+    "audio",
+    "audio library",
+    "audio processing",
+    "audio synthesis",
+    "dsp",
+    "digital signal processing",
+    "filter",
+    "graph",
+    "microphone",
+    "music",
+    "oscillator",
+    "react",
+    "signal",
+    "signal processing",
+    "sound",
+    "sound art",
+    "sound library",
+    "sound synthesis",
+    "speaker",
+    "synthesis",
+    "synthesizer",
+    "web audio",
+    "web audio api"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --dts",
+    "build": "tsup src/index.ts --dts --format cjs,esm --minify --legacy-output",
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
