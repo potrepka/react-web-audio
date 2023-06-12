@@ -1,6 +1,6 @@
 {
   "name": "react-web-audio",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React components for the Web Audio API",
   "author": "Nathaniel Potrepka",
   "license": "MIT",
